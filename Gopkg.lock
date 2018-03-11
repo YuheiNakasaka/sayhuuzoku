@@ -14,6 +14,24 @@
   version = "v1.0.0"
 
 [[projects]]
+  name = "github.com/ikawaha/kagome"
+  packages = [
+    "internal/da",
+    "internal/dic",
+    "internal/dic/data",
+    "internal/lattice",
+    "tokenizer"
+  ]
+  revision = "a01f016539a1b763dfae43303e3ee45fc52db937"
+  version = "v1.7.1"
+
+[[projects]]
+  name = "github.com/urfave/cli"
+  packages = ["."]
+  revision = "cfb38830724cc34fedffe9a2a29fb54fa9169cd1"
+  version = "v1.20.0"
+
+[[projects]]
   branch = "master"
   name = "golang.org/x/net"
   packages = [
@@ -25,6 +43,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "cf230307fc6f08ceb5309534184098f18a0c11a22ffc691782b4e69ff3925395"
+  inputs-digest = "d21529d741caf4560aa2df0cf4b19ffcc005dcf7dab60f433b8d7d26166fc2ae"
   solver-name = "gps-cdcl"
   solver-version = 1

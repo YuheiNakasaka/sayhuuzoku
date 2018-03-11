@@ -15,12 +15,15 @@ import (
 // ShopListURL : target url
 var ShopListURL = "http://fujoho.jp/index.php?p=shop_list&b="
 
+// ShopNameFile : shop name file name
+var ShopNameFile = "shoplist.txt"
+
 // Start : fetch page and get names
-func Start() error {
+func Start(maxPage int) error {
 	fmt.Println("Start scraping")
 
 	// 店名をリストにするファイル
-	file, err := os.Create(`shoplist.txt`)
+	file, err := os.Create(ShopNameFile)
 	if err != nil {
 		fmt.Println("Failed to create file")
 	}
@@ -31,7 +34,7 @@ func Start() error {
 	wg := &sync.WaitGroup{}
 	mu := &sync.Mutex{}
 
-	for i := 0; i < 154; i++ {
+	for i := 0; i < maxPage; i++ {
 		wg.Add(1)
 		maxConnection <- true
 
