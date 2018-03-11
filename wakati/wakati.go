@@ -32,7 +32,7 @@ func Start() error {
 	}
 	defer mydb.Connection.Close()
 
-	// ファイルを1行ずつ読み込む
+	// ファイルを1行ずつ読み込む準備
 	file, err := os.Open(scraping.ShopNameFile)
 	if err != nil {
 		fmt.Println("Failed to open file")
@@ -40,55 +40,68 @@ func Start() error {
 	defer file.Close()
 	scanner := bufio.NewScanner(file)
 
-	// 店名を分かち書きしてファイルに書き出し
-	maxConnection := make(chan bool, 20)
+	// 読みこんだテキストを貯めるチャンネルと
+	// token処理した単語を送るチャンネル
 	wg := &sync.WaitGroup{}
-	mu := &sync.Mutex{}
-	values := make([]MyToken, 0, 0)
-	t := tokenizer.New()
-	for scanner.Scan() {
-		wg.Add(1)
-		maxConnection <- true
+	lines := make(chan string)
+	values := make(chan MyToken)
 
+	// テキストを処理
+	t := tokenizer.New()
+	for j := 0; j < 5; j++ {
+		wg.Add(1)
 		go func() {
 			defer wg.Done()
+			for l := range lines {
+				cnt := 1 // 除いたtoken分詰めたposition
+				tokens := t.Tokenize(l)
+				for _, token := range tokens {
+					if token.Class == tokenizer.DUMMY {
+						continue
+					}
+					s := strings.TrimSpace(token.Surface)
+					if len(s) > 0 {
+						mytoken := MyToken{}
+						mytoken.text = s
+						mytoken.pos = cnt
+						values <- mytoken
+						cnt++
+					}
+				}
+			}
+		}()
+	}
+
+	// fileをガッと読む
+	go func() {
+		for scanner.Scan() {
 			text := scanner.Text()
 			// 最後の行
 			if text == "\n" || text == "" || text == " " {
-				<-maxConnection
 				return
 			}
-			fmt.Println(text)
+			lines <- text
+		}
+		close(lines)
+	}()
 
-			cnt := 1 // 除いたtoken分詰めたposition
-			tokens := t.Tokenize(text)
-			for _, token := range tokens {
-				if token.Class == tokenizer.DUMMY {
-					continue
-				}
-				s := strings.TrimSpace(token.Surface)
-				if len(s) > 0 {
-					mytoken := MyToken{}
-					mytoken.text = s
-					mytoken.pos = cnt
-					values = append(values, mytoken)
-					cnt++
-				}
-			}
-			<-maxConnection
-		}()
-	}
-	wg.Wait()
+	go func() {
+		wg.Wait()
+		close(values)
+	}()
 
 	// 100レコードずつ処理(多くしすぎるとtoo many sql variablesのエラーが出る)
-	idx := 0
-	for i := range values {
-		if i%100 == 0 {
-			writeMutex(values[i:i+100], mydb, mu)
-			idx = i
+	mu := &sync.Mutex{}
+	valueQueue := make([]MyToken, 0, 0)
+	for v := range values {
+		fmt.Println(v)
+		valueQueue = append(valueQueue, v)
+		if len(valueQueue) == 100 {
+			writeMutex(valueQueue, mydb, mu)
+			valueQueue = make([]MyToken, 0, 0)
 		}
 	}
-	writeMutex(values[idx:], mydb, mu)
+	writeMutex(valueQueue, mydb, mu)
 
 	fmt.Println("Finish")
 	return err
