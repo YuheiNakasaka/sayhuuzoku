@@ -15,18 +15,19 @@ import (
 
 // MyDB : db struct
 type MyDB struct {
-	connection *sql.DB
+	Connection *sql.DB
 }
 
 // New : create db and keep connection
 func (mydb *MyDB) New() error {
+	os.Remove("./data.db")
+
 	db, err := sql.Open("sqlite3", "./data.db")
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	mydb.connection = db
-	defer db.Close()
+	mydb.Connection = db
 
 	q := "CREATE TABLE IF NOT EXISTS wakati_shopname ("
 	q += " id INTEGER PRIMARY KEY AUTOINCREMENT"
