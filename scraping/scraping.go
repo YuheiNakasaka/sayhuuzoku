@@ -16,7 +16,7 @@ import (
 var ShopListURL = "http://fujoho.jp/index.php?p=shop_list&b="
 
 // ShopNameFile : shop name file name
-var ShopNameFile = "shoplist.txt"
+var ShopNameFile = "./resources/shoplist.txt"
 
 // Start : fetch page and get names
 func Start(maxPage int) error {

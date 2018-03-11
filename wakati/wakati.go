@@ -19,7 +19,7 @@ type MyToken struct {
 }
 
 // WakatiShopFileName : wakati shop name file
-var WakatiShopFileName = "shoplist_wakati.txt"
+var WakatiShopFileName = "./resources/shoplist_wakati.txt"
 
 // Start : create wakati file
 func Start() error {

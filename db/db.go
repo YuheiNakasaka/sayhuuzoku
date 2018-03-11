@@ -18,11 +18,12 @@ var InitDB = false
 
 // New : create db and keep connection
 func (mydb *MyDB) New() error {
+	dbFile := "./resources/data.db"
 	if InitDB == true {
-		os.Remove("./data.db")
+		os.Remove(dbFile)
 	}
 
-	db, err := sql.Open("sqlite3", "./data.db")
+	db, err := sql.Open("sqlite3", dbFile)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
