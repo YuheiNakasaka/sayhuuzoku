@@ -10,6 +10,7 @@ import (
 	"github.com/YuheiNakasaka/sayhuuzoku/db"
 	"github.com/YuheiNakasaka/sayhuuzoku/scraping"
 	"github.com/ikawaha/kagome/tokenizer"
+	"golang.org/x/text/unicode/norm"
 )
 
 // MyToken : token struct
@@ -26,6 +27,7 @@ func Start() error {
 	fmt.Println("Start creating wakati file")
 
 	// wakti ファイルを開く
+	db.InitDB = true // dbファイルを初期化する
 	mydb := &db.MyDB{}
 	err := mydb.New()
 	if err != nil {
@@ -60,7 +62,10 @@ func Start() error {
 					if token.Class == tokenizer.DUMMY {
 						continue
 					}
-					s := strings.TrimSpace(token.Surface)
+					s, nerr := normalize(token)
+					if nerr != nil {
+						continue
+					}
 					if len(s) > 0 {
 						mytoken := MyToken{}
 						mytoken.text = s
@@ -136,4 +141,38 @@ func writeMutex(values []MyToken, mydb *db.MyDB, mu *sync.Mutex) {
 		fmt.Println("Error occured in exec")
 		panic(err)
 	}
+}
+
+// 店名の正規化をする
+func normalize(token tokenizer.Token) (string, error) {
+	var err error
+	s := strings.TrimSpace(token.Surface)
+	features := token.Features()
+
+	// 全角を半角にする
+	zenkaku := []string{
+		"０１２３４５６７８９",
+		"ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ",
+		"ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ",
+	}
+	for _, s := range zenkaku {
+		s = string(norm.NFKC.Bytes([]byte(s)))
+	}
+
+	for _, f := range features {
+		if f == "空白" || f == "助詞" || f == "助動詞" || f == "サ変接続" || f == "括弧開" || f == "括弧閉" || f == "句点" || f == "地域" {
+			err = fmt.Errorf("Invalid style word: %s", f)
+			return "", err
+		}
+		if s == "-" || s == "~" || s == "～" || s == "ー" || s == "店" {
+			err = fmt.Errorf("Stop word: %s", f)
+			return "", err
+		}
+		if f == "動詞" && len(s) == 1 {
+			err = fmt.Errorf("Unusal word: %s %s", f, s)
+			return "", err
+		}
+	}
+	fmt.Println(s, token.Features())
+	return s, err
 }
