@@ -8,19 +8,19 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-// TODO:
-// db構造体つくる
-// Newでdbへの接続つくる
-// dbにinsertとcreateのメソッドはやす
-
 // MyDB : db struct
 type MyDB struct {
 	Connection *sql.DB
 }
 
+// InitDB : initialize database
+var InitDB = false
+
 // New : create db and keep connection
 func (mydb *MyDB) New() error {
-	os.Remove("./data.db")
+	if InitDB == true {
+		os.Remove("./data.db")
+	}
 
 	db, err := sql.Open("sqlite3", "./data.db")
 	if err != nil {

@@ -1,10 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 
 	"github.com/YuheiNakasaka/sayhuuzoku/db"
+	"github.com/YuheiNakasaka/sayhuuzoku/generator"
 	"github.com/YuheiNakasaka/sayhuuzoku/scraping"
 	"github.com/YuheiNakasaka/sayhuuzoku/wakati"
 	"github.com/urfave/cli"
@@ -44,7 +46,7 @@ func main() {
 		{
 			Name:    "wakati",
 			Aliases: []string{"w"},
-			Usage:   "Create wakati file from shoplist file",
+			Usage:   "Create wakati data from shoplist file",
 			Action: func(c *cli.Context) error {
 				wakati.Start()
 				return nil
@@ -54,7 +56,15 @@ func main() {
 			Name:    "generate",
 			Aliases: []string{"g"},
 			Usage:   "Generate shop name like huuzoku",
+			Flags: []cli.Flag{
+				cli.IntFlag{
+					Name:  "count, c",
+					Usage: "word count",
+				},
+			},
 			Action: func(c *cli.Context) error {
+				shopName, _ := generator.Start(c.Int("count"))
+				fmt.Println(shopName)
 				return nil
 			},
 		},

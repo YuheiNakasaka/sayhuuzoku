@@ -12,6 +12,7 @@ import (
 	"github.com/ikawaha/kagome/tokenizer"
 )
 
+// MyToken : token struct
 type MyToken struct {
 	text string
 	pos  int
@@ -94,7 +95,6 @@ func Start() error {
 	mu := &sync.Mutex{}
 	valueQueue := make([]MyToken, 0, 0)
 	for v := range values {
-		fmt.Println(v)
 		valueQueue = append(valueQueue, v)
 		if len(valueQueue) == 100 {
 			writeMutex(valueQueue, mydb, mu)
