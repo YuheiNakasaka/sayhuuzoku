@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/YuheiNakasaka/sayhuuzoku/db"
 	"github.com/YuheiNakasaka/sayhuuzoku/scraping"
 	"github.com/YuheiNakasaka/sayhuuzoku/wakati"
 	"github.com/urfave/cli"
@@ -15,6 +16,16 @@ func main() {
 	app.Version = "0.0.1"
 
 	app.Commands = []cli.Command{
+		{
+			Name:    "init",
+			Aliases: []string{"i"},
+			Usage:   "Init database",
+			Action: func(c *cli.Context) error {
+				mydb := db.MyDB{}
+				mydb.New()
+				return nil
+			},
+		},
 		{
 			Name:    "scraping",
 			Aliases: []string{"s"},
