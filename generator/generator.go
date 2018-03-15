@@ -23,7 +23,7 @@ func Start(total int) (string, error) {
 
 	words := make([]string, 0, 0)
 	for i := 1; i <= total; i++ {
-		query := fmt.Sprintf("select * from wakati_shopname where position = %d order by random() limit 1;", i)
+		query := fmt.Sprintf("select * from wakati_shopname where length(word) > 1 and position = %d group by word order by random() limit 1;", i)
 		rows, qerr := mydb.Connection.Query(query)
 		if qerr != nil {
 			fmt.Println("Failed to exexute query.")

@@ -167,11 +167,17 @@ func normalize(token tokenizer.Token) (string, error) {
 			err = fmt.Errorf("Invalid style word: %s", f)
 			return "", err
 		}
-		if s == "-" || s == "~" || s == "～" || s == "ー" || s == "店" {
+		if s == "-" || s == "~" || s == "～" || s == "ー" || s == "店" ||
+			s == "." || s == "！" || s == "・" || s == "っ" || s == "s" || s == "ぽ" ||
+			s == "…" || s == "？" || s == "、" {
 			err = fmt.Errorf("Stop word: %s", f)
 			return "", err
 		}
 		if f == "動詞" && len(s) == 1 {
+			err = fmt.Errorf("Unusal word: %s %s", f, s)
+			return "", err
+		}
+		if f != "名詞" && len(s) == 1 {
 			err = fmt.Errorf("Unusal word: %s %s", f, s)
 			return "", err
 		}
