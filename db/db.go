@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"os"
+	"path/filepath"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -18,7 +19,13 @@ var InitDB = false
 
 // New : create db and keep connection
 func (mydb *MyDB) New() error {
-	dbFile := "./resources/data.db"
+	absDir, err := filepath.Abs(filepath.Dir("."))
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	dbFile := absDir + "/resources/data.db"
 	if InitDB == true {
 		os.Remove(dbFile)
 	}
