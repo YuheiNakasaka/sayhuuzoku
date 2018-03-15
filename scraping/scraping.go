@@ -3,6 +3,7 @@ package scraping
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
@@ -16,14 +17,20 @@ import (
 var ShopListURL = "http://fujoho.jp/index.php?p=shop_list&b="
 
 // ShopNameFile : shop name file name
-var ShopNameFile = "./resources/shoplist.txt"
+var ShopNameFile = "/scraping/shoplist.txt"
 
 // Start : fetch page and get names
 func Start(maxPage int) error {
 	fmt.Println("Start scraping")
 
+	absDir, err := filepath.Abs(filepath.Dir("."))
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
 	// 店名をリストにするファイル
-	file, err := os.Create(ShopNameFile)
+	file, err := os.Create(absDir + ShopNameFile)
 	if err != nil {
 		fmt.Println("Failed to create file")
 	}

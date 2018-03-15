@@ -25,7 +25,7 @@ func (mydb *MyDB) New() error {
 		os.Exit(1)
 	}
 
-	dbFile := absDir + "/resources/data.db"
+	dbFile := absDir + "/db/data.db"
 	if InitDB == true {
 		os.Remove(dbFile)
 	}

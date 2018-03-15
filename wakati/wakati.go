@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 	"sync"
 
@@ -19,9 +20,6 @@ type MyToken struct {
 	pos  int
 }
 
-// WakatiShopFileName : wakati shop name file
-var WakatiShopFileName = "./resources/shoplist_wakati.txt"
-
 // Start : create wakati file
 func Start() error {
 	fmt.Println("Start creating wakati file")
@@ -36,7 +34,12 @@ func Start() error {
 	defer mydb.Connection.Close()
 
 	// ファイルを1行ずつ読み込む準備
-	file, err := os.Open(scraping.ShopNameFile)
+	absDir, err := filepath.Abs(filepath.Dir("."))
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	file, err := os.Open(absDir + scraping.ShopNameFile)
 	if err != nil {
 		fmt.Println("Failed to open file")
 	}
