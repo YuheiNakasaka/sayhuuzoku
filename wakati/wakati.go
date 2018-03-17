@@ -5,13 +5,14 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/YuheiNakasaka/sayhuuzoku/db"
 	"github.com/YuheiNakasaka/sayhuuzoku/scraping"
 	"github.com/ikawaha/kagome/tokenizer"
-	"golang.org/x/text/unicode/norm"
 )
 
 // MyToken : token struct
@@ -22,7 +23,8 @@ type MyToken struct {
 
 // Start : create wakati file
 func Start() error {
-	fmt.Println("Start creating wakati file")
+	start := time.Now()
+	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	// wakti ファイルを開く
 	db.InitDB = true // dbファイルを初期化する
@@ -54,7 +56,7 @@ func Start() error {
 
 	// テキストを処理
 	t := tokenizer.New()
-	for j := 0; j < 5; j++ {
+	for j := 0; j < 100; j++ {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
@@ -99,19 +101,20 @@ func Start() error {
 		close(values)
 	}()
 
-	// 100レコードずつ処理(多くしすぎるとtoo many sql variablesのエラーが出る)
+	// 多くしすぎるとtoo many sql variablesのエラーが出るのでぎりぎりまで
 	mu := &sync.Mutex{}
 	valueQueue := make([]MyToken, 0, 0)
 	for v := range values {
 		valueQueue = append(valueQueue, v)
-		if len(valueQueue) == 100 {
+		if len(valueQueue) == 200 {
 			writeMutex(valueQueue, mydb, mu)
 			valueQueue = make([]MyToken, 0, 0)
 		}
 	}
 	writeMutex(valueQueue, mydb, mu)
 
-	fmt.Println("Finish")
+	end := time.Now()
+	fmt.Printf("Finish: %f秒\n", (end.Sub(start)).Seconds())
 	return err
 }
 
@@ -152,16 +155,6 @@ func normalize(token tokenizer.Token) (string, error) {
 	s := strings.TrimSpace(token.Surface)
 	features := token.Features()
 
-	// 全角を半角にする
-	zenkaku := []string{
-		"０１２３４５６７８９",
-		"ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ",
-		"ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ",
-	}
-	for _, s := range zenkaku {
-		s = string(norm.NFKC.Bytes([]byte(s)))
-	}
-
 	for _, f := range features {
 		if f == "空白" || f == "助詞" || f == "助動詞" || f == "サ変接続" || f == "括弧開" || f == "括弧閉" || f == "句点" || f == "地域" {
 			err = fmt.Errorf("Invalid style word: %s", f)
@@ -182,6 +175,6 @@ func normalize(token tokenizer.Token) (string, error) {
 			return "", err
 		}
 	}
-	fmt.Println(s, token.Features())
+	// fmt.Println(s, token.Features())
 	return s, err
 }
