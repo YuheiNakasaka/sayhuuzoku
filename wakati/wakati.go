@@ -162,7 +162,8 @@ func normalize(token tokenizer.Token) (string, error) {
 		}
 		if s == "-" || s == "~" || s == "～" || s == "ー" || s == "店" ||
 			s == "." || s == "！" || s == "・" || s == "っ" || s == "s" || s == "ぽ" ||
-			s == "…" || s == "？" || s == "、" {
+			s == "…" || s == "？" || s == "、" || s == "倶楽部" || s == "club" || s == "CLUB" ||
+			s == "クラブ" || s == "Club" || s == "＆" || s == "☆" || s == "お" {
 			err = fmt.Errorf("Stop word: %s", f)
 			return "", err
 		}
