@@ -3,6 +3,7 @@ package wakati
 import (
 	"bufio"
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -56,6 +57,21 @@ func Start() error {
 
 	// テキストを処理
 	t := tokenizer.New()
+
+	dic, err := os.Open(absDir + scraping.ShopDicFile)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer dic.Close()
+	userDicRec, err := tokenizer.NewUserDicRecords(dic)
+	if err != nil {
+		log.Fatal(err)
+	}
+	userDic, err := userDicRec.NewUserDic()
+	if err != nil {
+		log.Fatal(err)
+	}
+	t.SetUserDic(userDic)
 	for j := 0; j < 100; j++ {
 		wg.Add(1)
 		go func() {
@@ -176,6 +192,6 @@ func normalize(token tokenizer.Token) (string, error) {
 			return "", err
 		}
 	}
-	// fmt.Println(s, token.Features())
+	//fmt.Println(s, token.Features())
 	return s, err
 }
