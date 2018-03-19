@@ -3,7 +3,6 @@ package wakati
 import (
 	"bufio"
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -60,16 +59,16 @@ func Start() error {
 
 	dic, err := os.Open(absDir + scraping.ShopDicFile)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	defer dic.Close()
 	userDicRec, err := tokenizer.NewUserDicRecords(dic)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	userDic, err := userDicRec.NewUserDic()
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	t.SetUserDic(userDic)
 	for j := 0; j < 100; j++ {
