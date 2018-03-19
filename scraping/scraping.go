@@ -32,7 +32,7 @@ func Start(maxPage int) error {
 	}
 
 	// 店名をリストにするファイル
-	file, err := os.Create(absDir + ShopNameFile)
+	file, err := os.Create(filepath.Clean(filepath.Join(absDir, ShopNameFile)))
 	if err != nil {
 		return fmt.Errorf("Failed to create file: %v", err)
 	}
