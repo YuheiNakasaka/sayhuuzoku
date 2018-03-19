@@ -29,7 +29,6 @@ func Start(total int) (string, error) {
 		if qerr != nil {
 			return "", fmt.Errorf("Failed to execute query: %v", err)
 		}
-		defer rows.Close()
 
 		for rows.Next() {
 			var id int
@@ -38,11 +37,12 @@ func Start(total int) (string, error) {
 			var createdAt time.Time
 			serr := rows.Scan(&id, &word, &position, &createdAt)
 			if serr != nil {
+				rows.Close()
 				return "", fmt.Errorf("Failed to fetch row: %v", err)
 			}
 			words = append(words, word)
 		}
-		defer rows.Close()
+		rows.Close()
 	}
 	return strings.Join(words, ""), err
 }
