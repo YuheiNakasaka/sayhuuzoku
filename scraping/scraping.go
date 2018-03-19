@@ -17,10 +17,10 @@ import (
 var ShopListURL = "http://fujoho.jp/index.php?p=shop_list&b="
 
 // ShopNameFile : shop name file name
-var ShopNameFile = "/scraping/shoplist.txt"
+var ShopNameFile = "scraping/shoplist.txt"
 
 // ShopDicFile : shop dictionary file name
-var ShopDicFile = "/scraping/shopdic.txt"
+var ShopDicFile = "scraping/shopdic.txt"
 
 // Start : fetch page and get names
 func Start(maxPage int) error {
@@ -32,7 +32,7 @@ func Start(maxPage int) error {
 	}
 
 	// 店名をリストにするファイル
-	file, err := os.Create(filepath.Clean(filepath.Join(absDir, ShopNameFile)))
+	file, err := os.Create(filepath.Join(absDir, filepath.FromSlash(ShopNameFile)))
 	if err != nil {
 		return fmt.Errorf("Failed to create file: %v", err)
 	}
