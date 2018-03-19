@@ -31,19 +31,18 @@ func Start() error {
 	mydb := &db.MyDB{}
 	err := mydb.New()
 	if err != nil {
-		fmt.Println("Failed to open db")
+		return fmt.Errorf("Failed to open db: %v", err)
 	}
 	defer mydb.Connection.Close()
 
 	// ファイルを1行ずつ読み込む準備
 	absDir, err := filepath.Abs(filepath.Dir("."))
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		return fmt.Errorf("Failed to open file: %v", err)
 	}
-	file, err := os.Open(absDir + scraping.ShopNameFile)
+	file, err := os.Open(filepath.Clean(filepath.Join(absDir, scraping.ShopNameFile)))
 	if err != nil {
-		fmt.Println("Failed to open file")
+		return fmt.Errorf("Failed to open shop name file: %v", err)
 	}
 	defer file.Close()
 	scanner := bufio.NewScanner(file)
@@ -59,16 +58,16 @@ func Start() error {
 
 	dic, err := os.Open(absDir + scraping.ShopDicFile)
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to open user dictionary file: %v", err)
 	}
 	defer dic.Close()
 	userDicRec, err := tokenizer.NewUserDicRecords(dic)
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to create user dictionary record: %v", err)
 	}
 	userDic, err := userDicRec.NewUserDic()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to create user dictionary: %v", err)
 	}
 	t.SetUserDic(userDic)
 	for j := 0; j < 100; j++ {
