@@ -28,14 +28,13 @@ func Start(maxPage int) error {
 
 	absDir, err := filepath.Abs(filepath.Dir("."))
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		return fmt.Errorf("Failed to open file: %v", err)
 	}
 
 	// 店名をリストにするファイル
 	file, err := os.Create(absDir + ShopNameFile)
 	if err != nil {
-		fmt.Println("Failed to create file")
+		return fmt.Errorf("Failed to create file: %v", err)
 	}
 	defer file.Close()
 
@@ -56,7 +55,8 @@ func Start(maxPage int) error {
 			url := ShopListURL + strconv.Itoa(page)
 			doc, scrapingErr := goquery.NewDocument(url)
 			if scrapingErr != nil {
-				fmt.Println("Failed to scrape")
+				err = fmt.Errorf("Failed to scrape: %v", scrapingErr)
+				return
 			}
 			fmt.Println("Scraping: " + url)
 

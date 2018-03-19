@@ -121,7 +121,9 @@ func Start() error {
 	for v := range values {
 		valueQueue = append(valueQueue, v)
 		if len(valueQueue) == 200 {
-			writeMutex(valueQueue, mydb, mu)
+			if err := writeMutex(valueQueue, mydb, mu); err != nil {
+				return err
+			}
 			valueQueue = make([]MyToken, 0, 0)
 		}
 	}
@@ -129,11 +131,11 @@ func Start() error {
 
 	end := time.Now()
 	fmt.Printf("Finish: %f秒\n", (end.Sub(start)).Seconds())
-	return err
+	return nil
 }
 
 // bulk insertする
-func writeMutex(values []MyToken, mydb *db.MyDB, mu *sync.Mutex) {
+func writeMutex(values []MyToken, mydb *db.MyDB, mu *sync.Mutex) error {
 	mu.Lock()
 	defer mu.Unlock()
 
@@ -152,15 +154,14 @@ func writeMutex(values []MyToken, mydb *db.MyDB, mu *sync.Mutex) {
 
 	stmt, err := mydb.Connection.Prepare(query)
 	if err != nil {
-		fmt.Println("Error occured in stmt")
-		panic(err)
+		return fmt.Errorf("Error occured in stmt: %v", err)
 	}
 
 	_, err = stmt.Exec(valArgs...)
 	if err != nil {
-		fmt.Println("Error occured in exec")
-		panic(err)
+		return fmt.Errorf("Error occured in exec: %v", err)
 	}
+	return nil
 }
 
 // 店名の正規化をする

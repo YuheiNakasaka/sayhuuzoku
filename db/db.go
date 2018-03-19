@@ -21,8 +21,7 @@ var InitDB = false
 func (mydb *MyDB) New() error {
 	absDir, err := filepath.Abs(filepath.Dir("."))
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		return fmt.Errorf("Failed to open database: %v", err)
 	}
 
 	dbFile := absDir + "/db/data.db"
@@ -32,8 +31,7 @@ func (mydb *MyDB) New() error {
 
 	db, err := sql.Open("sqlite3", dbFile)
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		return fmt.Errorf("Failed to open database: %v", err)
 	}
 	mydb.Connection = db
 
@@ -45,9 +43,5 @@ func (mydb *MyDB) New() error {
 	q += ")"
 
 	_, err = db.Exec(q)
-	if err != nil {
-		panic(err)
-	}
-
 	return err
 }
