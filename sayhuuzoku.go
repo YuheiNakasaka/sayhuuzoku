@@ -24,8 +24,7 @@ func main() {
 			Usage:   "Init database",
 			Action: func(c *cli.Context) error {
 				mydb := db.MyDB{}
-				mydb.New()
-				return nil
+				return mydb.New()
 			},
 		},
 		{
@@ -39,8 +38,7 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				scraping.Start(c.Int("max-page"))
-				return nil
+				return scraping.Start(c.Int("max-page"))
 			},
 		},
 		{
@@ -48,8 +46,7 @@ func main() {
 			Aliases: []string{"w"},
 			Usage:   "Create wakati data from shoplist file",
 			Action: func(c *cli.Context) error {
-				wakati.Start()
-				return nil
+				return wakati.Start()
 			},
 		},
 		{
@@ -63,7 +60,10 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				shopName, _ := generator.Start(c.Int("count"))
+				shopName, err := generator.Start(c.Int("count"))
+				if err != nil {
+					return err
+				}
 				fmt.Println(shopName)
 				return nil
 			},

@@ -1,6 +1,7 @@
 package generator
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 	"time"
@@ -11,13 +12,13 @@ import (
 // Start : generate shop name
 func Start(total int) (string, error) {
 	if total < 1 {
-		panic("Total count is more than 1.")
+		return "", errors.New("Total count is more than 1")
 	}
 
 	mydb := &db.MyDB{}
 	err := mydb.New()
 	if err != nil {
-		fmt.Println("Failed to connect db")
+		return "", fmt.Errorf("Failed to connect db: %v", err)
 	}
 	defer mydb.Connection.Close()
 
@@ -26,9 +27,8 @@ func Start(total int) (string, error) {
 		query := fmt.Sprintf("select * from wakati_shopname where length(word) > 1 and position = %d group by word order by random() limit 1;", i)
 		rows, qerr := mydb.Connection.Query(query)
 		if qerr != nil {
-			fmt.Println("Failed to exexute query.")
+			return "", fmt.Errorf("Failed to execute query: %v", err)
 		}
-		defer rows.Close()
 
 		for rows.Next() {
 			var id int
@@ -37,11 +37,12 @@ func Start(total int) (string, error) {
 			var createdAt time.Time
 			serr := rows.Scan(&id, &word, &position, &createdAt)
 			if serr != nil {
-				fmt.Println("Failed to fetch row")
+				rows.Close()
+				return "", fmt.Errorf("Failed to fetch row: %v", err)
 			}
 			words = append(words, word)
 		}
-		defer rows.Close()
+		rows.Close()
 	}
 	return strings.Join(words, ""), err
 }
