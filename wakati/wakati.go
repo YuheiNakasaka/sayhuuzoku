@@ -40,7 +40,7 @@ func Start() error {
 	if err != nil {
 		return fmt.Errorf("Failed to open file: %v", err)
 	}
-	file, err := os.Open(filepath.Clean(filepath.Join(absDir, scraping.ShopNameFile)))
+	file, err := os.Open(filepath.Join(absDir, filepath.FromSlash(scraping.ShopNameFile)))
 	if err != nil {
 		return fmt.Errorf("Failed to open shop name file: %v", err)
 	}
