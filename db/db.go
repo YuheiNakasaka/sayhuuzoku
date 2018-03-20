@@ -4,7 +4,9 @@ import (
 	"database/sql"
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"strings"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -19,12 +21,22 @@ var InitDB = false
 
 // New : create db and keep connection
 func (mydb *MyDB) New() error {
-	absDir, err := filepath.Abs(filepath.Dir("."))
+	b, err := exec.Command("go", "env", "GOPATH").CombinedOutput()
 	if err != nil {
-		return fmt.Errorf("Failed to open database: %v", err)
+		return fmt.Errorf("Failed to find path to database: %v", err)
+	}
+	dbFile := ""
+	for _, p := range filepath.SplitList(strings.TrimSpace(string(b))) {
+		p = filepath.Join(p, filepath.FromSlash("/src/github.com/YuheiNakasaka/sayhuuzoku/db/data.db"))
+		if _, err = os.Stat(p); err == nil {
+			dbFile = p
+			break
+		}
+	}
+	if dbFile == "" {
+		return fmt.Errorf("Failed to find path to database: %v", err)
 	}
 
-	dbFile := absDir + "/db/data.db"
 	if InitDB == true {
 		os.Remove(dbFile)
 	}
