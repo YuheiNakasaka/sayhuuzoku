@@ -16,6 +16,7 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "sayhuuzoku"
 	app.Version = "0.0.1"
+	app.Usage = " A new cli application to generate a shop name like 風俗店(huuzoku-shop)."
 
 	app.Commands = []cli.Command{
 		{
@@ -52,10 +53,11 @@ func main() {
 		{
 			Name:    "generate",
 			Aliases: []string{"g"},
-			Usage:   "Generate shop name like huuzoku",
+			Usage:   "Generate shop name like huuzoku (default: 4 words)",
 			Flags: []cli.Flag{
 				cli.IntFlag{
 					Name:  "count, c",
+					Value: 4,
 					Usage: "word count",
 				},
 			},

@@ -23,9 +23,9 @@ go get -u github.com/YuheiNakasaka/sayhuuzoku
 ## Usage
 
 ```
-$ sayhuuzoku -h
+$ sayhuuzoku h
 NAME:
-   sayhuuzoku - A new cli application
+   sayhuuzoku -  A new cli application to generate a shop name like 風俗店(huuzoku-shop).
 
 USAGE:
    sayhuuzoku [global options] command [command options] [arguments...]
@@ -37,7 +37,7 @@ COMMANDS:
      init, i      Init database
      scraping, s  Fetch shop name from http://fujoho.jp/index.php?p=shop_list
      wakati, w    Create wakati data from shoplist file
-     generate, g  Generate shop name like huuzoku
+     generate, g  Generate shop name like huuzoku (default: 4 words)
      help, h      Shows a list of commands or help for one command
 
 GLOBAL OPTIONS:
