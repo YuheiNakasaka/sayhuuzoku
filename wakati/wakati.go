@@ -12,7 +12,7 @@ import (
 
 	"github.com/YuheiNakasaka/sayhuuzoku/db"
 	"github.com/YuheiNakasaka/sayhuuzoku/scraping"
-	"github.com/ikawaha/kagome/tokenizer"
+	"github.com/ikawaha/kagome.ipadic/tokenizer"
 )
 
 // MyToken : token struct
