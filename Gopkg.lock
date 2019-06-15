@@ -14,7 +14,7 @@
   version = "v1.0.0"
 
 [[projects]]
-  name = "github.com/ikawaha/kagome"
+  name = "github.com/ikawaha/kagome.ipadic"
   packages = [
     "internal/da",
     "internal/dic",
@@ -22,8 +22,8 @@
     "internal/lattice",
     "tokenizer"
   ]
-  revision = "a01f016539a1b763dfae43303e3ee45fc52db937"
-  version = "v1.7.1"
+  revision = "6a236696f3137ef6b532b20b6ae6b17be67cca07"
+  version = "v1.1.0"
 
 [[projects]]
   name = "github.com/mattn/go-sqlite3"
