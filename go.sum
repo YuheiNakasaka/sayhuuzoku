@@ -1,0 +1,13 @@
+github.com/PuerkitoBio/goquery v1.3.0 h1:2LzdaeRwZjIMW7iKEei51jiCPB33mou4AI7QCzS4NgE=
+github.com/PuerkitoBio/goquery v1.3.0/go.mod h1:T9ezsOHcCrDCgA8aF1Cqr3sSYbO/xgdy8/R/XiIMAhA=
+github.com/andybalholm/cascadia v1.0.0 h1:hOCXnnZ5A+3eVDX8pvgl4kofXv2ELss0bKcqRySc45o=
+github.com/andybalholm/cascadia v1.0.0/go.mod h1:GsXiBklL0woXo1j/WYWtSYYC4ouU9PqHO0sqidkEA4Y=
+github.com/ikawaha/kagome.ipadic v1.1.0 h1:9hzwhcklEL4Cmp+lM9HQfmDg2nhB43Fe1n9UUY6mifY=
+github.com/ikawaha/kagome.ipadic v1.1.0/go.mod h1:DPSBbU0czaJhAb/5uKQZHMc9MTVRpDugJfX+HddPHHg=
+github.com/mattn/go-sqlite3 v1.6.0 h1:TDwTWbeII+88Qy55nWlof0DclgAtI4LqGujkYMzmQII=
+github.com/mattn/go-sqlite3 v1.6.0/go.mod h1:FPy6KqzDD04eiIsT53CuJW3U88zkxoIYsOqkbpncsNc=
+github.com/urfave/cli v1.20.0 h1:fDqGv3UG/4jbVl/QkFwEdddtEDjh/5Ov6X+0B/3bPaw=
+github.com/urfave/cli v1.20.0/go.mod h1:70zkFmudgCuE/ngEzBv17Jvp/497gISqfk5gWijbERA=
+golang.org/x/net v0.0.0-20180218175443-cbe0f9307d01/go.mod h1:mL1N/T3taQHkDXs73rZJwtUhF3w3ftmwwsq0BUmARs4=
+golang.org/x/net v0.0.0-20180308154319-d0aafc73d5cd h1:GNzbLJRy/nHOFS5m5780xbL4nia5w6cyb8exQGYw3Z4=
+golang.org/x/net v0.0.0-20180308154319-d0aafc73d5cd/go.mod h1:mL1N/T3taQHkDXs73rZJwtUhF3w3ftmwwsq0BUmARs4=
